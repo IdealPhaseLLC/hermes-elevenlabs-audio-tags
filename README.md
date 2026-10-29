@@ -107,6 +107,35 @@ auxiliary:
 
 That block is optional. It is an example of a cheaper pin, not a requirement.
 
+## Hear the difference
+
+After install, say this line and listen to the voice note:
+
+```text
+Did you like that joke? I'm SO funny
+```
+
+The visible chat text stays exactly that. The audio may not. On three live runs the tagger accepted two different rewrites, and either one is a normal result:
+
+- `[playful] Did you like that joke? I'm SO funny`
+- `Did you like that joke? [laughs] I'm SO funny`
+
+It can also come back unchanged. A slow model, a rejected rewrite, or a timeout speaks the plain line. Do not expect one exact tag every time.
+
+These clips are the same words, rendered with the tagger bypassed so the script is exactly what the filename says. Your voice will differ. The delivery change is the thing to listen for.
+
+- [No tags](examples/did-you-like-that-joke-no-tags.mp3)
+- [Laughs before "I'm SO funny"](examples/did-you-like-that-joke-laughs.mp3)
+- [Playful from the start](examples/did-you-like-that-joke-playful.mp3)
+
+Then check the log for a content-free tagger line:
+
+```text
+event=elevenlabs_tagger outcome=tagged elapsed_ms=2125 tag_count=1 provider=your-provider model=your-model no_progress_cap_ms=3000
+```
+
+`outcome=tagged` and `tag_count` greater than zero means a tag was inserted. `outcome=unchanged` means the model returned the original line. `rejected`, `timeout`, and `error` mean the spoken audio is the original line. The line never includes the transcript, the rewrite, the prompt, or the voice ID.
+
 The configured `timeout` may lower the tagger's no-progress deadline, but cannot
 raise it: the plugin makes one attempt with an effective **3-second
 no-progress window**. A substantive streamed response re-arms that window, so
