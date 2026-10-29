@@ -116,10 +116,19 @@ to tune it; do not infer a timeout merely because a note has no tags.
 
 ## Local checks
 
-Run these from the repository root with Hermes' environment available:
+From the repository root. Pytest is the only install these tests need. If
+Hermes is importable, the suite uses it. If it is not, the tests still run
+against this plugin's own behavior. That does not prove the plugin loads
+inside Hermes.
 
 ```bash
-PYTHONPATH=. python -m pytest tests -q
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
+On a machine that has Hermes, also run:
+
+```bash
 hermes plugins doctor . --ci
 ```
 
