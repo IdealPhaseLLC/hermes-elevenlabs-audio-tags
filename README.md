@@ -6,6 +6,17 @@ accepts an optional pronunciation dictionary ID in plugin settings — stock
 Hermes ElevenLabs config has no equivalent knob. The plugin lives outside the
 Hermes source tree so normal upstream updates do not overwrite this behavior.
 
+## Purpose
+
+Talking to an agent should feel like talking to a person, not reading a
+transcript out loud. The words can already be warm, funny, or careful. Flat
+speech throws that away.
+
+This plugin is a small lift for that experience. It gives ElevenLabs a few
+honest delivery cues, a laugh, a softer start, a pause, so the voice note
+sounds more natural. It does not invent a performance the words did not earn,
+and it does not change what you can read. The feeling belongs in the audio.
+
 ## Install
 
 ```bash
