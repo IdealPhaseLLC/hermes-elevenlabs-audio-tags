@@ -17,6 +17,20 @@ DEFAULT_VOICE_ID = "pNInz6obpgDQGcFmaJgB"
 DEFAULT_MODEL_ID = "eleven_multilingual_v2"
 
 
+def _elevenlabs_api_key() -> str:
+    """Read the ElevenLabs key through Hermes when it is installed.
+
+    Catalog rule: secrets come from ``agent.secret_scope.get_secret``, which
+    honors the active profile. A direct ``os.environ`` read is only the
+    fallback for tests and tooling that import this file without Hermes.
+    """
+    try:
+        from agent.secret_scope import get_secret
+    except ImportError:
+        return str(os.environ.get("ELEVENLABS_API_KEY") or "").strip()
+    return str(get_secret("ELEVENLABS_API_KEY", "") or "").strip()
+
+
 def pronunciation_dictionary_locators(get_config: Callable[[str, Any], Any]) -> Optional[list[dict[str, str]]]:
     """Return API locators when a dictionary ID is configured; otherwise None.
 
@@ -62,7 +76,10 @@ class ElevenLabsAudioTagsProvider(TTSProvider):
             import elevenlabs  # noqa: F401
         except ImportError:
             return False
-        return bool(os.environ.get("ELEVENLABS_API_KEY"))
+        try:
+            return bool(_elevenlabs_api_key())
+        except Exception:
+            return False
 
     def get_setup_schema(self) -> dict[str, Any]:
         return {
@@ -89,7 +106,7 @@ class ElevenLabsAudioTagsProvider(TTSProvider):
         **extra: Any,
     ) -> str:
         del speed, format, extra  # ElevenLabs voice/model settings are explicit below.
-        api_key = os.environ.get("ELEVENLABS_API_KEY")
+        api_key = _elevenlabs_api_key()
         if not api_key:
             raise ValueError("ELEVENLABS_API_KEY is not configured")
 

@@ -130,3 +130,37 @@ def test_explicit_timeout_is_passed_to_the_elevenlabs_client(tmp_path, monkeypat
     output = tmp_path / "out.mp3"
     assert service.synthesize("Hello there.", str(output), timeout=180) == str(output)
     assert captured["timeout"] == 180.0
+
+
+def test_api_key_comes_from_hermes_secret_scope_not_the_process_env(tmp_path, monkeypatch):
+    captured = {}
+
+    class FakeSpeech:
+        def convert(self, **kwargs):
+            del kwargs
+            return [b"audio"]
+
+    class FakeElevenLabs:
+        def __init__(self, *, api_key):
+            captured["api_key"] = api_key
+            self.text_to_speech = FakeSpeech()
+
+    elevenlabs = ModuleType("elevenlabs")
+    client = ModuleType("elevenlabs.client")
+    setattr(client, "ElevenLabs", FakeElevenLabs)
+    secret_scope = ModuleType("agent.secret_scope")
+    setattr(
+        secret_scope,
+        "get_secret",
+        lambda name, default=None: "scoped-key" if name == "ELEVENLABS_API_KEY" else default,
+    )
+    monkeypatch.setitem(sys.modules, "elevenlabs", elevenlabs)
+    monkeypatch.setitem(sys.modules, "elevenlabs.client", client)
+    monkeypatch.setitem(sys.modules, "agent.secret_scope", secret_scope)
+    monkeypatch.delenv("ELEVENLABS_API_KEY", raising=False)
+    monkeypatch.setattr(provider_module, "rewrite_audio_script", lambda text, **_: text)
+
+    service = provider_module.ElevenLabsAudioTagsProvider(lambda key, default=None: default)
+    output = tmp_path / "out.mp3"
+    assert service.synthesize("Hello there.", str(output)) == str(output)
+    assert captured["api_key"] == "scoped-key"

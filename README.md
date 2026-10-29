@@ -49,6 +49,21 @@ Then set plugin settings and `tts.provider` as below, and restart the gateway
   class when applicable. It never logs the transcript, rewritten transcript, prompt,
   voice ID, exception message, or credentials.
 
+## Disclosure
+
+The text Hermes has already prepared for speech, the voice ID, the model ID,
+and any pronunciation-dictionary locator you set are sent to
+`api.elevenlabs.io` with your `ELEVENLABS_API_KEY`. That call is billed to
+your ElevenLabs account. Audio is written only to the path Hermes requests.
+
+When automatic tags are on, the untagged transcript is also sent to the model
+configured for `auxiliary.idealphase_elevenlabs_audio_tags`. If you did not
+pin one, that is your normal chat model. The tagger uses that reply only to
+add delivery tags. The visible chat text is not changed.
+
+This plugin does not store the key, does not phone home, and does not log the
+transcript, the rewrite, the prompt, the voice ID, or the key.
+
 ## Hermes integration
 
 The plugin registers the non-shadowing provider name:
