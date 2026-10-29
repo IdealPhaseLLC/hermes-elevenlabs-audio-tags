@@ -122,11 +122,19 @@ The visible chat text stays exactly that. The audio may not. On three live runs 
 
 It can also come back unchanged. A slow model, a rejected rewrite, or a timeout speaks the plain line. Do not expect one exact tag every time.
 
-These clips are the same words, rendered with the tagger bypassed so the script is exactly what the filename says. Your voice will differ. The delivery change is the thing to listen for.
+These clips are the same words, rendered with the tagger bypassed so the script is exactly what the label says. Your voice will differ. The delivery change is the thing to listen for. Press play on the page. You do not need to download the file.
 
-- [No tags](examples/did-you-like-that-joke-no-tags.mp3)
-- [Laughs before "I'm SO funny"](examples/did-you-like-that-joke-laughs.mp3)
-- [Playful from the start](examples/did-you-like-that-joke-playful.mp3)
+No tags
+
+https://github.com/user-attachments/assets/8cf527cb-89b6-480b-a6df-5065989f5f0e
+
+`[laughs]` before "I'm SO funny"
+
+https://github.com/user-attachments/assets/9370a5a9-6875-42c3-9a0f-87253c515952
+
+`[playful]` from the start
+
+https://github.com/user-attachments/assets/1a415ec9-aeeb-41e4-8a65-94c0adfe1851
 
 Then check the log for a content-free tagger line:
 
