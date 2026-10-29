@@ -1,5 +1,7 @@
 # IdealPhase ElevenLabs Audio Tags
 
+![Audio tags for ElevenLabs](docs/banner.jpg)
+
 A native Hermes TTS-provider plugin that preserves the visible chat transcript
 and sends a separately enriched **audio-only** copy to ElevenLabs. It also
 accepts an optional pronunciation dictionary ID in plugin settings — stock
