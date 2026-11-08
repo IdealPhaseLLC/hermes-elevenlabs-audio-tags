@@ -170,7 +170,13 @@ Then check the log for a content-free tagger line:
 event=elevenlabs_tagger outcome=tagged elapsed_ms=2125 tag_count=1 provider=your-provider model=your-model no_progress_cap_ms=3000
 ```
 
-`outcome=tagged` and `tag_count` greater than zero means a tag was inserted. `outcome=unchanged` means the model returned the original line. `rejected`, `timeout`, and `error` mean the spoken audio is the original line. The line never includes the transcript, the rewrite, the prompt, or the voice ID.
+`outcome=tagged` and `tag_count` greater than zero means a tag was inserted. `outcome=unchanged` means the model returned the original line. `rejected`, `timeout`, and `error` mean the spoken audio is the original line. A rejection also names why, still without the transcript:
+
+```text
+event=elevenlabs_tagger outcome=rejected reasons=prose_changed elapsed_ms=900 tag_count=1 tag_limit=2 provider=your-provider model=your-model no_progress_cap_ms=3000
+```
+
+`reasons` is one or more of `empty`, `over_cap`, `unknown_tag`, and `prose_changed`. `over_cap` means `tag_count` exceeded `tag_limit`. `unknown_tag` adds `unknown_brackets` as a count only, never the bracket text. A line can list more than one reason. The line never includes the transcript, the rewrite, the prompt, or the voice ID.
 
 The configured `timeout` may lower the tagger's no-progress deadline, but cannot
 raise it: the plugin makes one attempt with an effective **3-second
