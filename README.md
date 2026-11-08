@@ -170,14 +170,15 @@ Then check the log for a content-free tagger line:
 event=elevenlabs_tagger outcome=tagged elapsed_ms=2125 tag_count=1 provider=your-provider model=your-model no_progress_cap_ms=3000
 ```
 
-`outcome=tagged` and `tag_count` greater than zero means a tag was inserted. `outcome=unchanged` means the model returned the original line. `rejected`, `timeout`, and `error` mean the spoken audio is the original line. The line never includes the transcript, the rewrite, the prompt, or the voice ID.
+`outcome=tagged` and `tag_count` greater than zero means a tag was inserted. `outcome=unchanged` means the model returned the original line. `rejected`, `timeout`, and `error` mean the spoken audio is the original line. A rejection also names why, still without the transcript:
 
-The configured `timeout` may lower the tagger's no-progress deadline, but cannot
-raise it: the plugin makes one attempt with an effective **3-second
-no-progress window**. A substantive streamed response re-arms that window, so
-`elapsed_ms` may exceed 3000 on a healthy response that keeps making progress.
-Inspect content-free `event=elevenlabs_tagger` log lines when deciding whether
-to tune it; do not infer a timeout merely because a note has no tags.
+```text
+event=elevenlabs_tagger outcome=rejected reasons=prose_changed elapsed_ms=900 tag_count=1 tag_limit=2 provider=your-provider model=your-model no_progress_cap_ms=3000
+```
+
+`reasons` is one or more of `empty`, `over_cap`, `unknown_tag`, and `prose_changed`. `over_cap` means `tag_count` exceeded `tag_limit`. `unknown_tag` adds `unknown_brackets` as a count only, never the bracket text. A line can list more than one reason. The line never includes the transcript, the rewrite, the prompt, or the voice ID.
+
+The tag completion does not send `max_tokens`. It makes one non-streaming attempt. The configured timeout may lower the deadline, but cannot raise it past 3 seconds. A reply that does not finish inside that window speaks the original line as `timeout`, not a clipped rewrite. Do not infer a timeout merely because a note has no tags.
 
 ## Local checks
 
