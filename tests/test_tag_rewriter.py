@@ -69,6 +69,9 @@ def test_default_path_uses_one_configured_attempt(monkeypatch):
     assert "[moan] can sound adult or sexual." in system_prompt
     assert "never infer it from ordinary warmth, humor, or appreciation." in system_prompt
     assert "Never add accents, character voices, or sound effects not already warranted by the words." in system_prompt
+    assert "Insert tags only." in system_prompt
+    assert "A change is rejected and the tags are discarded." in system_prompt
+    assert "Preserve every original spoken character" not in system_prompt
 
 
 def test_configured_attempt_does_not_call_hermes_fallback(monkeypatch):
@@ -121,6 +124,8 @@ def test_configured_attempt_does_not_call_hermes_fallback(monkeypatch):
     assert len(client.chat.completions.calls) == 1
     assert client.chat.completions.calls[0]["timeout"] == 3.0
     assert client.chat.completions.calls[0]["model"] == "grok-4.20-0309-non-reasoning"
+    assert "max_tokens" not in client.chat.completions.calls[0]
+    assert "max_completion_tokens" not in client.chat.completions.calls[0]
 
 
 def test_length_scaled_limit_is_bounded():

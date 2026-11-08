@@ -155,7 +155,6 @@ def _call_configured_tag_model(messages: list, *, temperature: float) -> object:
         messages=messages,
         temperature=temperature,
         timeout=timeout,
-        max_tokens=400,
     )
 
 
@@ -193,7 +192,7 @@ def rewrite_audio_script(
         "direction only and must never change the spoken words.\n\n"
         "Allowed tags: " + ", ".join(f"[{tag}]" for tag in ALLOWED_TAGS) + ".\n\n"
         "Rules:\n"
-        "- Preserve every original spoken character, word order, and punctuation.\n"
+        "- Insert tags only. Do not change, correct, or rephrase any word, spelling, sentence, or punctuation, even if the original looks wrong. A change is rejected and the tags are discarded.\n"
         f"- Insert at most {max_tags} allowed tags, only where context clearly earns one.\n"
         "- Do not add tags to dry technical, factual, or safety-critical text.\n"
         "- Use playful tags only when the words are genuinely playful.\n"
